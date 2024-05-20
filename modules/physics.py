@@ -10,18 +10,20 @@ g = 9.81 # m/s^2
 # takes velocity vector, fluid density rho, drag coefficient and frontal surface area
 def drag_force(velocity, rho, drag_coeff, area):
     # unit vector in the direction of velocity
-    v_hat = velocity / np.linalg.norm(velocity)
+    v_mag = np.linalg.norm(velocity)
+    v_hat = velocity / v_mag if v_mag > 0 else np.zeros(len(velocity))
     # F_drag = 1/2 C_d*p*A*v^2 directed opposite the direction of travel
-    return -(1/2 * drag_coeff * rho * area * velocity**2) * v_hat
+    return -(1/2 * drag_coeff * rho * area * v_mag**2) * v_hat
 
 
 # Lift force
 # takes relative air velcocity in the direction of the wing, fluid density rho, lift coefficient, and wing area
 # assumes no vertical velocity
 def lift_force(velocity, rho, coeff_lift, area):
-    direction = np.array([[0,0,1]])
+    direction = np.array([0,0,1])
+    v_mag = np.linalg.norm(velocity)
     # F_lift = 1/2 C_l*p*A*V^2 directed perpendicular to velocity
-    return direction * (1/2 * coeff_lift * rho * area * velocity**2)
+    return direction * (1/2 * coeff_lift * rho * area * v_mag**2)
 
 
 # I'm fucking quitting
@@ -89,9 +91,14 @@ class RaceCar:
 
         static_friction = motor_force + braking_force + turning_force
         kinetic_friction = -1 * velocity/np.linalg.norm(velocity) * g * self.mass if np.linalg.norm(velocity) != 0 else np.zeros(2)
-        limit_of_friction = g * self.mass
+        normal_force = g * self.mass + 1 * lift_force(forward_motion, air_density, self.coeff_lift, self.wing_area)[2]
+        limit_of_friction = self.coeff_friction * normal_force 
         frictional_force, transition_factor = static_to_kinetic_transition(static_friction, kinetic_friction, limit_of_friction, transition_coefficient)
-        acceleration = frictional_force / self.mass
+
+        drag = drag_force(velocity, air_density, self.drag_coeff, self.drag_area)
+        f_net = drag + frictional_force
+
+        acceleration = f_net / self.mass
         angular_velocity = np.linalg.norm(forward_motion)/turn_radius * np.sign(u[2])
 
         return np.array([velocity[0], velocity[1], acceleration[0], acceleration[1], angular_velocity])
@@ -102,3 +109,4 @@ class RaceCar:
 
     def get_state(self):
         return self.state
+

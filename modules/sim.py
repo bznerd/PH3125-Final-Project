@@ -5,12 +5,12 @@ def rk4(x, u, t, dxdt, dt, t_final):
     # Iterate over the number of steps it will take to reach t_final rounded down to the nearest integer
     for _ in range(int((t_final-t)/dt)):
         # Apply step
-        x_next, t_next = rk4_step(x, u, t, dxdt, dt)
+        x_next, t_next = rk4_step(x_next, u, t_next, dxdt, dt)
 
     # If a non-integer number of steps was requried take one more shorter step to reach the target final time
     if (t_next < t_final):
         # Apply step
-        x_next, t_next = rk4_step(x, u, t, dxdt, t_final-t_next) 
+        x_next, t_next = rk4_step(x_next, u, t_next, dxdt, t_final-t_next) 
     
     # Return final values
     return x_next, t_next
