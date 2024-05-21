@@ -6,23 +6,23 @@ import numpy as np
 mass = 200 # kg
 wheel_base = 1.7 # m
 wheel_radius = 0.26 # m 
-coeff_friction = 2.3 # unitless
+coeff_friction = 1.9 # unitless
 
 # DC Motor parameters
 w_free = 150 # rad/s
 V_max = 200 # Volts
-T_stall = 600 # Nm
+T_stall = 700 # Nm
 I_stall = 180 # A
 
 # No downforce car
-drag_coeff = 0.63
-drag_area = 2.5
+drag_coeff = 0.63 # unitless
+drag_area = 2.5 # m^2
 
 # Downforce car
-downforce_drag_coeff = 0.98
-downforce_drag_area = 3.5
-lift_coeff = 2.58
-wing_area = 3.5
+downforce_drag_coeff = 0.98 # unitless
+downforce_drag_area = 3.5 # m^2
+lift_coeff = 2.58 # unitless
+wing_area = 3.5 # m^2
 
 # shared dc motor object 
 dc_motor = physics.DC_Motor(w_free, V_max, T_stall, I_stall)

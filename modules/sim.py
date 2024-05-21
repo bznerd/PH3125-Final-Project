@@ -17,6 +17,7 @@ def rk4(x, u, t, dxdt, dt, t_final):
 
 # Runge-Kutta 4th order numerical integration method
 # x is the state vector, u is the input vector, t the current time, dxdt is the time derivative of the state vector as a function of (x, u, t) and dt is the time step
+# implemented using formulas from https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
 def rk4_step(x, u, t, dxdt, dt):
     k1 = dxdt(x, u, t)
     k2 = dxdt(x + dt * k1/2, u, t + dt/2)
